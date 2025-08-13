@@ -5,7 +5,7 @@ A basic and barebones GUI made in AutoHotKey to download audios or videos using 
 1. Run the script
 2. Load either configuration file using the appropriate button (unless already loaded)
 3. Paste a supported link in the text field and press "Download video/audio". A Command Prompt window will open and execute the command `yt-dlp.exe` with only the link passed as argument. The GUI stays open.
-   3.1 Once yt-dlp is done, the text field is cleared for you to input a new link.
+   - Once yt-dlp is done, the text field is cleared for you to input a new link.
 
 ## Update yt-dlp
 There is a handy button that runs `yt-dlp -U` to update the yt-dlp executable.
