@@ -15,15 +15,15 @@ Una GUI basilare e semplice per scaricare audio o video con yt-dlp scritta in Au
    - Una volta che yt-dlp finisce, la casella di testo è pulita così puoi inserire un nuovo link.
 
 ## Aggiorna yt-dlp
-C'è un comodo pulsante che esegue il comando `yt-dlp -U` per aggiornare l'eseguibile di yt-dlp.
+C'è un comodo pulsante che esegue il comando `yt-dlp -U` per aggiornare l'eseguibile di yt-dlp.\
 E' consigliabile tenere d'occhio la pagina github di yt-dlp per aggiornamenti importanti per l'utilizzo o requisiti vari.
 
 ### Dettagli
-Per ora, è solo fatto per la mia struttura di cartelle e impostazioni dello schermo.
-Il programma utilizza la posizione del file di configurazione `AppData\Roaming\yt-dlp\config.txt`. Per cambiarla, bisogna modificare il parametro `--config-location` a linea 47 e la subroutine `SpostaConfig`.
-E' presente una gestione degli errori per cartella yt-dlp mancante in `AppData` e la presenza di cartelle/file di configurazione.
-Deno viene installato in `Users\USER\.deno`, il programma dovrebbe riuscire a trovare il percorso corretto, ma nel caso non riuscisse bisognerà modificare il file di configurazione a mano aggiungendo `--js-runtimes deno:C:\Users\USER\.deno\bin\deno.exe`.
-Il programma è scritto in italiano, tutti i pulsanti sono stati posizionati e dimensionati in base al testo e il mio schermo.
+Per ora, è solo fatto per la mia struttura di cartelle e impostazioni dello schermo.\
+Il programma utilizza la posizione del file di configurazione `AppData\Roaming\yt-dlp\config.txt`. Per cambiarla, bisogna modificare il parametro `--config-location` a linea 47 e la subroutine `SpostaConfig`.\
+E' presente una gestione degli errori per cartella yt-dlp mancante in `AppData` e la presenza di cartelle/file di configurazione.\
+Deno viene installato in `Users\USER\.deno`, il programma dovrebbe riuscire a trovare il percorso corretto, ma nel caso non riuscisse bisognerà modificare il file di configurazione a mano aggiungendo `--js-runtimes deno:C:\Users\USER\.deno\bin\deno.exe`.\
+Il programma è scritto in italiano, tutti i pulsanti sono stati posizionati e dimensionati in base al testo e il mio schermo.\
 
 ## Contribuire
 Se vuoi contribuire in qualunque modo, crea una nuova branch intitolata con la tua modifica (ad esempio "Pretty-GUI"). <sub>Non sono proprio sicuro di come funzioni questa parte, non arrabbiarti...</sub>
