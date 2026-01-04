@@ -27,10 +27,11 @@ Gui, Add, Button, xp+190 yp w190 Center vVideo gSpostaConfig, Carica config per 
 
 Gui, Add, Button, x130 y+21 w190 Center gControlloAgg, Controlla/scarica aggiornamenti
 Gui, Add, Edit, vlink x36 yp+32 w378 -Multi -WantReturn
+Gui, Add, CheckBox, vVerbose x130, Aggiungi --verbose (tiene cmd aperto)
 Gui, Add, Button, x130 yp+30 w190 Center +Default gScarica, Scarica audio/video
 GuiControl, Focus, link
 
-Gui, Show, Center w450 h168
+Gui, Show, Center w450 h185
 return
 
 ControlloAgg:
@@ -44,8 +45,13 @@ Scarica:
 	if (link = "") {
 		MsgBox, Inserisci un link!
 	} else {
-		RunWait, %A_ComSpec% /c yt-dlp.exe --config-location %A_AppData%\yt-dlp\config.txt %link%
+		if (Verbose) {
+			RunWait, % A_ComSpec " /k yt-dlp.exe --config-location " ""A_AppData "\yt-dlp\config.txt " "" link " --verbose"
+		} else {
+			RunWait, % A_ComSpec " /c yt-dlp.exe --config-location " ""A_AppData "\yt-dlp\config.txt " "" link
+		}
 		GuiControl,, link, % ""
+		GuiControl,, Verbose, 0
 	}
 return
 
@@ -85,11 +91,12 @@ ControlloDeno:
 		return
 	} else {
 		IniWrite, true, gui.ini, Main, DenoOK
-		FileAppend, % "`n--js-runtimes deno:" percorsoDeno "\bin\deno.exe", configAudio\config.txt
-		FileAppend, % "`n--js-runtimes deno:" percorsoDeno "\bin\deno.exe", configVideo\config.txt
+		FileAppend, % "`n--js-runtimes deno:""" percorsoDeno "\bin\deno.exe""", configAudio\config.txt
+		FileAppend, % "`n--js-runtimes deno:""" percorsoDeno "\bin\deno.exe""", configVideo\config.txt
 	}
 return
 
 GuiClose:
 	ExitApp
 return
+
