@@ -1,49 +1,71 @@
-;Version 1.5
+;Version 1.7
 
 SetWorkingDir, %A_ScriptDir%
 #SingleInstance force
+#Include lib\JSON.ahk
 
-PercorsoNormalizzato(path) {
+NormalizedPath(path) {
     cc := DllCall("GetFullPathName", "str", path, "uint", 0, "ptr", 0, "ptr", 0, "uint")
     VarSetCapacity(buf, cc*2)
     DllCall("GetFullPathName", "str", path, "uint", cc, "str", buf, "ptr", 0)
     return buf
 }
 
+pathDeno := NormalizedPath(A_AppData "\..\..\.deno")
+langIndex := 1		; Default language index on DropDownList
+locales := JSON.Load(FileOpen(".\locale\EN.json", "r").read())	; Default language
+
 if !FileExist("gui.ini") {
 	FileAppend,, "gui.ini"
 	IniWrite, false, gui.ini, Main, DenoOK
-	GoSub, ControlloDeno
+	GoSub, CheckDeno
 } else {
 	IniRead, okDeno, gui.ini, Main, DenoOK
 	if (okDeno = "false") {
-		GoSub, ControlloDeno
+		GoSub, CheckDeno
 	}
 }
-	
-Gui, New, +Border, Scarica con yt-dlp
-Gui, Add, Button, x35 y20 w190 Center vAudio gSpostaConfig, Carica config per audio
-Gui, Add, Button, xp+190 yp w190 Center vVideo gSpostaConfig, Carica config per video
 
-Gui, Add, Button, x130 y+21 w190 Center gControlloAgg, Controlla/scarica aggiornamenti
-Gui, Add, Edit, vlink x36 yp+32 w378 -Multi -WantReturn
-Gui, Add, CheckBox, vVerbose x130, Aggiungi --verbose (tiene cmd aperto)
-Gui, Add, Button, x130 yp+30 w190 Center +Default gScarica, Scarica audio/video
-GuiControl, Focus, link
+MainGui:
+	Gui, New, +Border, % locales.mainHeader
+	Gui, Add, DropDownList, w40 Choose%langIndex% vLang gChangeLang, EN|IT
+	Gui, Add, Button, x35 yp+25 w190 Center vAudio gChangeConfig, % locales.GUI.audio
+	Gui, Add, Button, xp+190 yp w190 Center vVideo gChangeConfig, % locales.GUI.video
 
-Gui, Show, Center w450 h185
+	Gui, Add, Button, x85 y+21 w140 Center vUpdDlp gUpdDlp, % locales.GUI.updateDlp
+	Gui, Add, Button, xp+140 w140 Center vUpdDeno gUpdDeno, % locales.GUI.updateDeno
+	Gui, Add, Edit, vlink x36 yp+32 w378 -Multi -WantReturn
+	Gui, Add, CheckBox, vVerbose x130 w200, % locales.GUI.addVerbose
+	Gui, Add, Button, x130 yp+30 w190 Center +Default vDownload gDownload, % locales.GUI.download
+	GuiControl, Focus, link
+	Gui, Show, Center w450 h200
 return
 
-ControlloAgg:
+ChangeLang:
+	Gui, Submit, NoHide
+	locales := JSON.Load(FileOpen(".\locale\" Lang ".json", "r").read())
+	GuiControl, Text, Audio, % locales.GUI.audio
+	GuiControl, Text, Video, % locales.GUI.video
+	GuiControl, Text, UpdDlp, % locales.GUI.updateDlp
+	GuiControl, Text, UpdDeno, % locales.GUI.updateDeno
+	GuiControl, Text, Verbose, % locales.GUI.addVerbose
+	GuiControl, Text, Download, % locales.GUI.download
+return
+
+UpdDlp:
 	RunWait, %A_ComSpec% /c yt-dlp.exe -U
 	if FileExist("yt-dlp.exe.old")
 		FileDelete, yt-dlp.exe.old
 return
 
-Scarica:
+UpdDeno:
+	Run, deno.exe upgrade
+return
+
+Download:
 	Gui, Submit, NoHide
 	if (link = "") {
-		MsgBox, Inserisci un link!
+		MsgBox, % locales.GUI.insertLink
 	} else {
 		if (Verbose) {
 			RunWait, % A_ComSpec " /k yt-dlp.exe --config-location " ""A_AppData "\yt-dlp\config.txt " "" link " --verbose"
@@ -55,48 +77,60 @@ Scarica:
 	}
 return
 
-SpostaConfig:
+ChangeConfig:
 	if !FileExist(A_AppData "\yt-dlp") {
 		FileCreateDir, % A_AppData "\yt-dlp"
-		MsgBox,, Caricamento config, % "Non trovato cartella di config. Creata in percorso " A_AppData "."
+		MsgBox,, % locales.Config.header, % locales.Config.dlpFolderCreated A_AppData
 	}
 	
-	tipo := A_GuiControl
-	if !FileExist("config" . tipo) {
-		MsgBox,, Controllo config %tipo% - Errore, Non trovato cartella della configurazione %tipo%!
+	type := A_GuiControl
+	if (type = "audio") {
+		folderErrMsg := locales.Config.audioConfigFolderNotFound
+		fileErrMsg := locales.Config.audioConfigFileNotFound
+		configChangedMsg := locales.Config.audioConfigChanged
 	} else {
-		if !FileExist("config" . tipo . "\config.txt") {
-			MsgBox,, Controllo config %tipo% - Errore, Non trovato file di configurazione %tipo%!
+		folderErrMsg := locales.Config.videoConfigFolderNotFound
+		fileErrMsg := locales.Config.videoConfigFileNotFound
+		configChangedMsg := locales.Config.videoConfigChanged
+	}
+	
+	if !FileExist("config" . type) {
+			MsgBox,, % locales.Config.headerErr, % folderErrMsg
+	} else {
+		if !FileExist("config" . type . "\config.txt") {
+			MsgBox,, % locales.Config.headerErr, % fileErrMsg
 		} else {
-			FileCopy, config%tipo%\config.txt, %A_AppData%\yt-dlp\, 1
-			MsgBox,, Config %tipo%, Configurazione download %tipo% caricata!
+			FileCopy, config%type%\config.txt, %A_AppData%\yt-dlp\, 1
+			MsgBox,, % locales.Config.header, % configChangedMsg
 		}
 	}
 return
 
-ControlloDeno:
-	percorsoDeno := PercorsoNormalizzato(A_AppData "\..\..\.deno")
-	if !FileExist(percorsoDeno) {
-		MsgBox, 4, Deno mancante - installare?, Deno non trovato! Vuoi che lo installi per te? Si aprirà una finestra di PowerShell che lo installerà da solo.
+CheckDeno:
+	if !FileExist(pathDeno) {
+		MsgBox, 4, % locales.Deno.header, % locales.Deno.infoMsg
 		IfMsgBox Yes
-			RunWait, powershell.exe irm https://deno.land/install.ps1 | iex
-			if FileExist(path) {
-				IniWrite, true, gui.ini, Main, DenoOK
-			}
-			MsgBox,, Installazione Deno, Deno installato. Il programma si chiuderà, quindi riapri DownloaderGUI.
-			ExitApp
+			GoSub, InstallDeno
 		IfMsgBox No
-			MsgBox, Ok. Cercalo su deno.com, installalo e riapri DownloaderGUI.
+			MsgBox,, % locales.Deno.header, % locales.Deno.noInstall
 			ExitApp
 		return
 	} else {
 		IniWrite, true, gui.ini, Main, DenoOK
-		FileAppend, % "`n--js-runtimes deno:""" percorsoDeno "\bin\deno.exe""", configAudio\config.txt
-		FileAppend, % "`n--js-runtimes deno:""" percorsoDeno "\bin\deno.exe""", configVideo\config.txt
+		FileAppend, % "`n--js-runtimes deno:""" pathDeno "\bin\deno.exe""", configAudio\config.txt
+		FileAppend, % "`n--js-runtimes deno:""" pathDeno "\bin\deno.exe""", configVideo\config.txt
 	}
+return
+
+InstallDeno:
+	RunWait, powershell.exe irm https://deno.land/install.ps1 | iex
+	if FileExist(pathDeno) {
+		IniWrite, true, gui.ini, Main, DenoOK
+	}
+	MsgBox,, % locales.Deno.header, % locales.Deno.denoInstalled
+	ExitApp
 return
 
 GuiClose:
 	ExitApp
 return
-
