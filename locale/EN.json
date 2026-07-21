@@ -1,0 +1,29 @@
+{
+	"mainHeader": "Download with yt-dlp",
+	"GUI": {
+		"audio": "Load audio config",
+		"video": "Load video config",
+		"updateDlp": "Update yt-dlp",
+		"updateDeno": "Update Deno",
+		"addVerbose": "Add --verbose (keeps cmd open)",
+		"download": "Download audio/video",
+		"insertLink": "Insert a link!",
+	},
+	"Config": {
+		"header": "Loading config",
+		"headerErr": "Loading config - Error",
+		"dlpFolderCreated": "Config folder not found. Created in path ",
+		"audioConfigFolderNotFound": "Couldn't find audio config folder!",
+		"videoConfigFolderNotFound": "Couldn't find video config folder!",
+		"audioConfigFileNotFound": "Couldn't find file for audio config!",
+		"videoConfigFileNotFound": "Couldn't find file for video config!",
+		"audioConfigChanged": "Changed config to audio config!",
+		"videoConfigChanged": "Changed config to video config!",
+	},
+	"Deno": {
+		"header": "Missing Deno - install?",
+		"infoMsg": "Deno not found! Would you like to install it automatically? A PowerShell window will open.",
+		"denoInstalled": "Deno has been installed. The program will close.",
+		"noInstall": "Ok. Find it on deno.com, install it and open the program again.",
+	},
+}
