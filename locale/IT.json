@@ -1,0 +1,29 @@
+{
+	"mainHeader": "Scarica con yt-dlp",
+	"GUI": {
+		"audio": "Carica config per audio",
+		"video": "Carica config per video",
+		"updateDlp": "Aggiorna yt-dlp",
+		"updateDeno": "Aggiorna Deno",
+		"addVerbose": "Aggiungi --verbose (tiene cmd aperto)",
+		"download": "Scarica audio/video",
+		"insertLink": "Inserisci un link!"
+	},
+	"Config": {
+		"header": "Caricamento config",
+		"headerErr": "Caricamento config - Errore",
+		"dlpFolderCreated": "Non trovato cartella di config. Creata in percorso ",
+		"audioConfigFolderNotFound": "Non trovato cartella della configurazione audio!",
+		"videoConfigFolderNotFound": "Non trovato cartella della configurazione video!",
+		"audioConfigFileNotFound": "Non trovato file della configurazione audio!",
+		"videoConfigFileNotFound": "Non trovato file della configurazione video!",
+		"audioConfigChanged": "Caricato configurazione per audio!",
+		"videoConfigChanged": "Caricato configurazione per video!",
+	},
+	"Deno": {
+		"header": "Deno mancante - installare?",
+		"infoMsg": "Deno non trovato! Vuoi installarlo automaticamente? Una finestra di PowerShell si aprirà.",
+		"denoInstalled": "Deno installato. Il programma si chiuderà.",
+		"noInstall": "Ok. Cercalo su deno.com, installalo e riapri il programma.",
+	},
+}
